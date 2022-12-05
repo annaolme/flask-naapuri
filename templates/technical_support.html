@@ -1,0 +1,32 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+
+<main>
+    <div class="container">
+      
+        <p class="lead">
+            If you have any problems with using this platform, you can contact us. Fill the fields . We will solve your issue in the nearest time.
+        </p>
+            <form method="POST">
+                {{ form.hidden_tag() }} 
+                <br> 
+                {{ form.name.label(class="form-label") }} 
+                {{ form.name (class="form-control")}}
+                <br> 
+                {{ form.email.label(class="form-label") }} 
+                {{ form.email (type="email", class="form-control")}}
+                <br> 
+                {{ form.phone.label(class="form-label") }} 
+                {{ form.phone(class="form-control")}}
+                <br> 
+                {{ form.message.label(class="form-label") }} 
+                {{ form.message(type="text", class="form-control")}}
+                <br> 
+                {{ form.submit(class="btn btn-primary")}}
+                <br>
+       </form>
+
+</main>
+
+{% endblock %}
