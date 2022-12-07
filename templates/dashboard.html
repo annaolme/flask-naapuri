@@ -13,7 +13,7 @@
 
     <div class="card">
         <div class="card-header">
-            Welcome to your profile, {{ current_user.name }}!
+            Tervetuloa profiiliin! , {{ current_user.name }}!
             <!-- <strong>Member since:</strong> {{ current_user.date_added }}<br/> -->
         </div>
         <div class="card-body">
@@ -22,13 +22,13 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="card mb-4">
-                                <div class="card-header">User Details Update</div>
+                                <div class="card-header">Käyttäjätietojen päivitys</div>
                                 <div class="card-body">
                                     <form action="/dashboard" method="POST" enctype="multipart/form-data">
                                         {{ form.hidden_tag() }}
                                         <!-- Form Group (username)-->
                                         <div class="mb-3">
-                                            {{ form.username.label(class="form-label" ) }} (how your name will appear to other users on the site) {{ form.username(class="form-control" , value=name_to_update.username) }}
+                                            {{ form.username.label(class="form-label" ) }} ((miten nimesi näkyy muille sivuston käyttäjille) {{ form.username(class="form-control" , value=name_to_update.username) }}
                                         </div>
                                         <!-- Form Row-->
                                         <div class="row gx-3 mb-3">
@@ -44,30 +44,28 @@
                                         <!-- Save changes button-->
                                         {{ form.submit(class="btn btn-primary") }}
                                         <a href="{{ url_for('delete', id=current_user.id)}}" class="btn btn-danger">Delete</a>
-                                    
+
                                 </div>
                             </div>
-                           
-                            
+
+
 
                         </div>
                         <div class="col-xl-4">
                             <!-- Profile picture card-->
                             <div class="card mb-1 mb-xl-0">
-                                <div class="card-header" align="center">Profile Picture
+                                <div class="card-header" align="center">Profiilikuva
                                 </div>
                                 <div class="small font-italic text-muted mb-1" align="center">JPG or PNG no larger than 5 MB</div>
                                 <div class="card-body text-center">
                                     <!-- Profile picture image-->
                                     {% if current_user.profile_pic %}
-                                        <img class="mb-1" src="{{ url_for('static', filename='images/' + current_user.profile_pic)}}" width="180" align="center"> 
-                                    {% else %}
-                                        <img class="mb-1" src="{{ url_for('static', filename='images/default_profile_pic.png')}}" width="180" align="center"> 
-                                    {% endif %}
+                                    <img class="mb-1" src="{{ url_for('static', filename='images/' + current_user.profile_pic)}}" width="180" align="center"> {% else %}
+                                    <img class="mb-1" src="{{ url_for('static', filename='images/default_profile_pic.png')}}" width="180" align="center"> {% endif %}
                                     <!-- Profile picture upload button-->
-                                    
-                                        {{ form.profile_pic.label(class="form-label") }} {{ form.profile_pic(class="form-control", value=name_to_update.profile_pic) }}
-                                        
+
+                                    {{ form.profile_pic.label(class="form-label") }} {{ form.profile_pic(class="form-control", value=name_to_update.profile_pic) }}
+
                                     </form>
                                 </div>
                             </div>
@@ -83,14 +81,14 @@
     <!-- Account page navigation-->
     <div class="card">
         <div class="card-header">
-            Update profile
+            Päivitä profiilisi
         </div>
     </div>
     <br>
-       <div class="col-xl-8">
-            <!-- Account details card-->
-            
-        </div>
-    </div>
+    <div class="col-xl-8">
+        <!-- Account details card-->
 
-   {% endblock %}
+    </div>
+</div>
+
+{% endblock %}

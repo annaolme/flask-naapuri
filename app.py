@@ -67,7 +67,7 @@ def add_post():
 
         # Return a Message
     
-        flash("Blog Post Submitted Successfully!")
+        flash("Uusi viesti lähetetty onnistuneesti!")
     
     return render_template("add_post.html", form=form)
       
@@ -103,27 +103,27 @@ class Users(UserMixin, db.Model):
 
 #Form Class
 class NamerForm(FlaskForm):
-    name = StringField("Your name:", [validators.Length(min=4, max=25)])
-    username = StringField("Username:", [validators.Length(min=4, max=25)])
-    email = StringField("Your email:", validators=[DataRequired()])
-    password_hash = PasswordField("Create your password:", [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match!')])
-    confirm = PasswordField("Repeat the password:")
+    name = StringField("Nimi:", [validators.Length(min=4, max=25)])
+    username = StringField("Käyttäjänimi:", [validators.Length(min=4, max=25)])
+    email = StringField("email:", validators=[DataRequired()])
+    password_hash = PasswordField("Luo oma salasana:", [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match!')])
+    confirm = PasswordField("Toista salasana:")
     profile_pic = FileField("")
-    submit = SubmitField("Submit")
+    submit = SubmitField("Lähetä")
     
 #login field 
 class PasswordForm(FlaskForm):
-    email = EmailField("Your email:", validators=[DataRequired()])
-    password_hash = PasswordField("Your password:", [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match!')])
-    submit = SubmitField("Submit")
+    email = EmailField("email:", validators=[DataRequired()])
+    password_hash = PasswordField("salasana:", [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match!')])
+    submit = SubmitField("Lähetä")
     
     
 class TechnicalSupport(FlaskForm):
-    name = StringField("Your name:")
-    email = StringField("Your email address:", validators=[DataRequired()])
-    phone = StringField("Your phone number:")
-    message = TextAreaField("Write your message:", validators=[DataRequired()])
-    submit = SubmitField("Send")
+    name = StringField("Nimi:")
+    email = StringField("email:", validators=[DataRequired()])
+    phone = StringField("puhelinnumero:")
+    message = TextAreaField("Kirjoita viesti:", validators=[DataRequired()])
+    submit = SubmitField("Lähetä")
     
     
     
@@ -148,7 +148,7 @@ def delete(id):
 		try:
 			db.session.delete(user_to_delete)
 			db.session.commit()
-			flash("User Deleted Successfully!!")
+			flash("Käyttäjä poistettu onnistuneesti!!")
 
 			our_users = Users.query.order_by(Users.date_added)
 			return render_template("login.html", 
@@ -157,18 +157,18 @@ def delete(id):
 			our_users=our_users)
 
 		except:
-			flash("Whoops! There was a problem deleting user, try again...")
+			flash("Käyttäjää ei voi poistaa. Yritä uudelleen!")
 			return render_template("dashboard.html", 
 			form=form, name=name,our_users=our_users)
 	else:
-		flash("Sorry, you can't delete that user! ")
+		flash("Käyttäjää ei voi poistaa! ")
 		return redirect(url_for('dashboard'))
 
 #Create LoginForm
 class LoginForm(FlaskForm):
-    username = StringField("Username:", validators=[DataRequired()])
-    password = PasswordField("Password:", validators=[DataRequired()])
-    submit = SubmitField("Submit")
+    username = StringField("Käyttäjänimi:", validators=[DataRequired()])
+    password = PasswordField("Salasana:", validators=[DataRequired()])
+    submit = SubmitField("Lähetä")
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -188,12 +188,12 @@ def login():
             #check hash
             if check_password_hash(user.password_hash, form.password.data):
                 login_user(user)
-                flash("You are logged in!")
+                flash("Olet kirjautunut sisään!")
                 return redirect(url_for('kotisivu'))
             else:
-                flash("Wrong password = Try again!")
+                flash("Virheellinen salasana. Yritä uudelleen!")
         else:
-            flash("That user does not exist = Try again!")  
+            flash("Käyttäjää ei ole olemassa. Yritä uudelleen!")  
             
     return render_template("login.html", form=form)
 
@@ -239,12 +239,12 @@ def dashboard():
                 try:
                     db.session.commit()
                     saver.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
-                    flash("User Updated Successfully!")
+                    flash("Muutokset on päivitetty onnistuneesti!")
                     return render_template("dashboard.html", 
 					                    form=form,
 					                    name_to_update = name_to_update)
                 except:
-                    flash("Error!  Looks like there was a problem...try again!")
+                    flash("Tapahtui virhe, yritä uudelleen.")
                     return render_template("dashboard.html", 
 					                    form=form,
 					                    name_to_update = name_to_update)
@@ -286,7 +286,7 @@ def technical_support():
 @login_required
 def logout():
     logout_user()
-    flash("You have been logged out!")
+    flash("Olet kirjautunut ulos!")
     return redirect(url_for('login'))
 
 
@@ -309,7 +309,7 @@ def signup():
         form.name.data = ""
         form.email.data = " "
         form.password_hash.data = " "
-        flash("You are regestered successfully! Now you can login!")
+        flash("Olet rekisteröitynyt onnistuneesti! Nyt voit kirjautua sisään!")
         return redirect(url_for('login'))
     return render_template("signup.html",
                            name = name,
