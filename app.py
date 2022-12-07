@@ -9,6 +9,7 @@ from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.file import FileField
 from werkzeug.utils import secure_filename
+from wtforms.widgets import TextArea
 import uuid as uuid
 import os
 
@@ -29,6 +30,51 @@ migrate = Migrate(app, db)
 UPLOAD_FOLDER = 'static/images/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
+# Create a Blog Post model
+class Posts(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(255))
+	content = db.Column(db.Text)
+	author = db.Column(db.String(255))
+	date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+	slug = db.Column(db.String(255))
+
+class PostForm(FlaskForm):
+    title = StringField("Title", validators=[DataRequired()])
+    content = StringField("Content", validators=[DataRequired()], widget=TextArea())
+    author = StringField("Author", validators=[DataRequired()])
+    slug = StringField("Slug", validators=[DataRequired()])
+    submit = SubmitField("Submit")
+
+
+# Add Post Page
+@app.route('/add_post', methods=['GET', 'POST'])
+def add_post():
+    form = PostForm()
+
+    if form.validate_on_submit():
+        post = Posts(title=form.title.data, content=form.content.data, author=form.author.data, slug=form.slug.data)
+        # Clear The Form
+        form.title.data = ''
+        form.content.data = ''
+        form.author.data = ''
+        form.slug.data = ''
+
+        # Add post data to database
+        db.session.add(post)
+        db.session.commit()
+
+        # Return a Message
+    
+        flash("Blog Post Submitted Successfully!")
+    
+    return render_template("add_post.html", form=form)
+      
+@app.route('/vaihtokauppa', methods=['GET', 'POST'])
+def vaihtokauppa():
+     return render_template("vaihtokauppa.html")
+    
 #create a model
 class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -36,6 +82,7 @@ class Users(UserMixin, db.Model):
     name = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(200), nullable=False, unique=True)
     password_hash = db.Column(db.String(128), nullable=False)
+    profile_pic =db.Column(db.String(1000), nullable=True)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
     
    
@@ -61,10 +108,10 @@ class NamerForm(FlaskForm):
     email = StringField("Your email:", validators=[DataRequired()])
     password_hash = PasswordField("Create your password:", [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match!')])
     confirm = PasswordField("Repeat the password:")
-    profile_pic = FileField("Profile Pic")
+    profile_pic = FileField("")
     submit = SubmitField("Submit")
     
-#login fild 
+#login field 
 class PasswordForm(FlaskForm):
     email = EmailField("Your email:", validators=[DataRequired()])
     password_hash = PasswordField("Your password:", [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords must match!')])
@@ -104,7 +151,7 @@ def delete(id):
 			flash("User Deleted Successfully!!")
 
 			our_users = Users.query.order_by(Users.date_added)
-			return render_template("signup.html", 
+			return render_template("login.html", 
 			form=form,
 			name=name,
 			our_users=our_users)
@@ -142,7 +189,7 @@ def login():
             if check_password_hash(user.password_hash, form.password.data):
                 login_user(user)
                 flash("You are logged in!")
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('kotisivu'))
             else:
                 flash("Wrong password = Try again!")
         else:
@@ -156,6 +203,18 @@ def login():
 def index():
     return render_template("index.html")
 
+
+@app.route('/varaus')
+@login_required
+def varaus():
+    return render_template("varaus.html")
+
+@app.route('/kotisivu')
+@login_required
+def kotisivu():
+    return render_template("kotisivu.html")
+
+
 # Create Dashboard Page 
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
@@ -167,41 +226,36 @@ def dashboard():
                 name_to_update.name = request.form['name']
                 name_to_update.email = request.form['email']
                 name_to_update.username = request.form['username']
-
-
-                # Check for profile pic
-                if request.files['profile_pic']:
-                        name_to_update.profile_pic = request.files['profile_pic']
-
-                        # Grab Image Name
-                        pic_filename = secure_filename(name_to_update.profile_pic.filename)
-		                # Set UUID
-                        pic_name = str(uuid.uuid1()) + "_" + pic_filename
-		                # Save That Image
-                        saver = request.files['profile_pic']
-
-                        # Change it to a string to save to db
-                        name_to_update.profile_pic = pic_name
-                        try:
-                                db.session.commit()
-                                saver.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
-                                flash("User Updated Successfully!")
-                                return render_template("dashboard.html", 
+                name_to_update.profile_pic = request.files['profile_pic']
+            
+                # Grab Image Name
+                pic_filename = secure_filename(name_to_update.profile_pic.filename)
+		        # Set UUID
+                pic_name = str(uuid.uuid1()) + "_" + pic_filename
+		        # Save That Image
+                saver = request.files['profile_pic']
+                # Change it to a string to save to db
+                name_to_update.profile_pic = pic_name
+                try:
+                    db.session.commit()
+                    saver.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
+                    flash("User Updated Successfully!")
+                    return render_template("dashboard.html", 
 					                    form=form,
 					                    name_to_update = name_to_update)
-                        except:
-                                flash("Error!  Looks like there was a problem...try again!")
-                                return render_template("dashboard.html", 
+                except:
+                    flash("Error!  Looks like there was a problem...try again!")
+                    return render_template("dashboard.html", 
 					                    form=form,
 					                    name_to_update = name_to_update)
                 else:
-                        db.session.commit()
-                        flash("User Updated Successfully!")
-                        return render_template("dashboard.html", 
-				                form=form, 
-				                name_to_update = name_to_update)
+                    db.session.commit()
+                    flash("User Updated Successfully!")
+                    return render_template("dashboard.html", 
+                                        form=form, 
+                                        name_to_update = name_to_update)
         else:
-                return render_template("dashboard.html", 
+            return render_template("dashboard.html", 
 				                form=form,
 				                name_to_update = name_to_update,
 				                id = id)
@@ -212,7 +266,9 @@ def dashboard():
    
 
 # Create Dashboard Page 
+
 @app.route('/technical_support', methods=['GET', 'POST'])
+@login_required
 def technical_support():
     name = None
     form = TechnicalSupport()
@@ -261,6 +317,7 @@ def signup():
 
 
 @app.route('/news') 
+@login_required
 def news():
     return render_template("news.html")
 
