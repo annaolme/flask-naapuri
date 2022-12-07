@@ -1,7 +1,22 @@
 {% extends 'base.html' %} {%block content%}
 
+
 <div class="container">
-    <h1>Vaihtokauppa</h1>
-    <li><a href="{{ url_for('add_post') }}" class="nav-link px-2 link-dark">Lisää viesti</a></li>
-</div>
+    <div class="card-header">
+        Vaihtokauppa <a href="{{ url_for('add_post') }}" class="class=btn btn-danger">Luo uusi ilmoitus</a></div>
+    </br>
+
+    {% for post in posts %}
+    <div class="class=h-100 p-5 mb-4 bg-white border rounded-3">
+
+        {{post.title}}
+        </br>
+        {{post.author}}</br>
+        {{post.slug}}</br>
+        {{post.date_posted}}</br>
+        {{post.content}}</br>
+        </br>
+
+    </div>
+    {% endfor %}</div>
 {% endblock %}

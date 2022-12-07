@@ -47,6 +47,12 @@ class PostForm(FlaskForm):
     slug = StringField("Slug", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
+# @app.route('/vaihtokauppa')
+# def posts():
+
+#         posts= Posts.query.order_by(Posts.date_posted)
+
+#         return render_template("vaihtokauppa.html", posts=posts)
 
 # Add Post Page
 @app.route('/add_post', methods=['GET', 'POST'])
@@ -73,7 +79,8 @@ def add_post():
       
 @app.route('/vaihtokauppa', methods=['GET', 'POST'])
 def vaihtokauppa():
-     return render_template("vaihtokauppa.html")
+        posts = Posts.query.order_by(Posts.date_posted)
+        return render_template("vaihtokauppa.html", posts=posts)
     
 #create a model
 class Users(UserMixin, db.Model):
@@ -89,7 +96,7 @@ class Users(UserMixin, db.Model):
     
     @property
     def password(self):
-        raise AttributeError('Password is not readable')
+        raise AttributeError('Salasana ei ole luettavissa')
     
     @password.setter
     def password(self, password):

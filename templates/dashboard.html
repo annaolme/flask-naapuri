@@ -28,7 +28,7 @@
                                         {{ form.hidden_tag() }}
                                         <!-- Form Group (username)-->
                                         <div class="mb-3">
-                                            {{ form.username.label(class="form-label" ) }} ((miten nimesi näkyy muille sivuston käyttäjille) {{ form.username(class="form-control" , value=name_to_update.username) }}
+                                            {{ form.username.label(class="form-label" ) }} (miten nimesi näkyy muille sivuston käyttäjille) {{ form.username(class="form-control" , value=name_to_update.username) }}
                                         </div>
                                         <!-- Form Row-->
                                         <div class="row gx-3 mb-3">
@@ -43,7 +43,7 @@
                                         </div>
                                         <!-- Save changes button-->
                                         {{ form.submit(class="btn btn-primary") }}
-                                        <a href="{{ url_for('delete', id=current_user.id)}}" class="btn btn-danger">Delete</a>
+                                        <a href="{{ url_for('delete', id=current_user.id)}}" class="btn btn-danger">Poista</a>
 
                                 </div>
                             </div>
