@@ -41,18 +41,12 @@ class Posts(db.Model):
 	slug = db.Column(db.String(255))
 
 class PostForm(FlaskForm):
-    title = StringField("Title", validators=[DataRequired()])
-    content = StringField("Content", validators=[DataRequired()], widget=TextArea())
-    author = StringField("Author", validators=[DataRequired()])
-    slug = StringField("Slug", validators=[DataRequired()])
-    submit = SubmitField("Submit")
+    title = StringField("Otsikko", validators=[DataRequired()])
+    content = StringField("Kuvaus ja kunto", validators=[DataRequired()], widget=TextArea())
+    author = StringField("Nimi ja Puhelinnumero", validators=[DataRequired()])
+    slug = StringField("Hinta", validators=[DataRequired()])
+    submit = SubmitField("Lähetä")
 
-# @app.route('/vaihtokauppa')
-# def posts():
-
-#         posts= Posts.query.order_by(Posts.date_posted)
-
-#         return render_template("vaihtokauppa.html", posts=posts)
 
 # Add Post Page
 @app.route('/add_post', methods=['GET', 'POST'])

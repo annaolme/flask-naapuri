@@ -8,13 +8,12 @@
 
     {% for post in posts %}
     <div class="class=h-100 p-5 mb-4 bg-white border rounded-3">
-
-        {{post.title}}
+        <h4 class="my-0 fw-normal text-dark">Otsikko </h4>{{post.title}}
         </br>
-        {{post.author}}</br>
-        {{post.slug}}</br>
-        {{post.date_posted}}</br>
-        {{post.content}}</br>
+        <h4 class="my-0 fw-normal text-dark"> Nimi ja Puhelinnumero </h4>{{post.author}}</br>
+        <h4 class="my-0 fw-normal text-dark">Hinta </h4>{{post.slug}}</br>
+        <h4 class="my-0 fw-normal text-dark"> Päivämäärä </h4>{{post.date_posted}}</br>
+        <h4 class="my-0 fw-normal text-dark"> Kuvaus ja kunto </h4>{{post.content}}</br>
         </br>
 
     </div>
