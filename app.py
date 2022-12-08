@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, redirect, request
+from flask import Flask, render_template, url_for, flash, redirect, request, url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, EmailField,TextAreaField, PasswordField, validators
 from wtforms.validators import DataRequired
@@ -47,6 +47,53 @@ class PostForm(FlaskForm):
     slug = StringField("Hinta", validators=[DataRequired()])
     submit = SubmitField("Lähetä")
 
+@app.route('/vaihtokauppa/delete/<int:id>')
+@login_required
+def delete_post(id):
+	post_to_delete = Posts.query.get_or_404(id)
+	
+	try:
+		db.session.delete(post_to_delete)
+		db.session.commit()
+
+			# Return a message
+		flash("Blog Post Was Deleted!")
+
+			# Grab all the posts from the database
+		posts = Posts.query.order_by(Posts.date_posted)
+		return render_template("vaihtokauppa.html", posts=posts)
+
+
+	except:
+			# Return an error message
+		flash("Whoops! There was a problem deleting post, try again...")
+
+			# Grab all the posts from the database
+		posts = Posts.query.order_by(Posts.date_posted)
+		return render_template("vaihtokauppa.html", posts=posts)
+	
+
+@app.route('/vaihtokauppa/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_post(id):
+	post = Posts.query.get_or_404(id)
+	form = PostForm()
+	if form.validate_on_submit():
+		post.title = form.title.data
+		post.author = form.author.data
+		post.slug = form.slug.data
+		post.content = form.content.data
+		# Update Database
+		db.session.add(post)
+		db.session.commit()
+		flash("Post Has Been Updated!")
+		return redirect(url_for('vaihtokauppa', id=post.id))
+	form.title.data = post.title
+	form.author.data = post.author
+	form.slug.data = post.slug
+	form.content.data = post.content
+	return render_template('edit_post.html', form=form)
+	
 
 # Add Post Page
 @app.route('/add_post', methods=['GET', 'POST'])
