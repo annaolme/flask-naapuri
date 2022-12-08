@@ -8,12 +8,19 @@
 
     {% for post in posts %}
     <div class="class=h-100 p-5 mb-4 bg-white border rounded-3">
-        <h4 class="my-0 fw-normal text-dark">Otsikko </h4>{{post.title}}
+        <h5 class="my-0 fw-normal text-dark">Otsikko </h5>{{post.title}}
         </br>
-        <h4 class="my-0 fw-normal text-dark"> Nimi ja Puhelinnumero </h4>{{post.author}}</br>
-        <h4 class="my-0 fw-normal text-dark">Hinta </h4>{{post.slug}}</br>
-        <h4 class="my-0 fw-normal text-dark"> Päivämäärä </h4>{{post.date_posted}}</br>
-        <h4 class="my-0 fw-normal text-dark"> Kuvaus ja kunto </h4>{{post.content}}</br>
+        </br>
+        <h5 class="my-0 fw-normal text-dark">
+            Nimi ja Puhelinnumero
+        </h5>
+        {{post.author}}</br>
+        </br>
+        <h5 class="my-0 fw-normal text-dark">Hinta </h5>{{post.slug}}</br>
+        </br>
+        <h5 class="my-0 fw-normal text-dark"> Päivämäärä </h5>{{post.date_posted}}</br>
+        </br>
+        <h5 class="my-0 fw-normal text-dark"> Kuvaus ja kunto </h5>{{post.content}}</br>
         </br>
         <a href="{{ url_for('edit_post', id=post.id)}}" class="btn btn-outline-secondary btn-sm">Muokkaa ilmoitusta</a>
 
