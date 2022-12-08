@@ -57,7 +57,7 @@ def delete_post(id):
 		db.session.commit()
 
 			# Return a message
-		flash("Blog Post Was Deleted!")
+		flash("Ilmoitus poistettu")
 
 			# Grab all the posts from the database
 		posts = Posts.query.order_by(Posts.date_posted)
@@ -66,7 +66,7 @@ def delete_post(id):
 
 	except:
 			# Return an error message
-		flash("Whoops! There was a problem deleting post, try again...")
+		flash("Ilmoituksen poistamisella oli ongelma, yritä uudelleen...")
 
 			# Grab all the posts from the database
 		posts = Posts.query.order_by(Posts.date_posted)
