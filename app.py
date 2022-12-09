@@ -27,8 +27,13 @@ app.config['SECRET_KEY'] = "mysecretkey"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+os.chmod('static/uploads/', 755)
+
 UPLOAD_FOLDER = 'static/images/'
+UPLOAD_FOLDER2 = 'static/uploads/'
+ALLOWED_EXTENTIONS = {'png', 'jpg', 'jpeg'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER2'] = UPLOAD_FOLDER2
 
 
 # Create a Blog Post model
@@ -46,6 +51,50 @@ class PostForm(FlaskForm):
     author = StringField("Nimi ja Puhelinnumero", validators=[DataRequired()])
     slug = StringField("Hinta", validators=[DataRequired()])
     submit = SubmitField("Lähetä")
+
+# Create a news model
+class News(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(255))
+	content = db.Column(db.Text)
+	author = db.Column(db.String(255))
+	date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+	file =db.Column(db.String(1000), nullable=True)
+
+class NewsForm(FlaskForm):
+    title = StringField("Otsiko:", validators=[DataRequired()])
+    content = TextAreaField("Teksti:", validators=[DataRequired()], widget=TextArea())
+    author = StringField("Kirjoittaja:", validators=[DataRequired()])
+    file = FileField("Kuva:")
+    submit = SubmitField("Lähetä")
+    
+
+
+@app.route('/add_news', methods=['GET', 'POST'])
+@login_required
+def add_news():
+    form = NewsForm()
+    if form.validate_on_submit():
+        file=form.file.data
+        new = News(title=form.title.data, content=form.content.data, author=form.author.data, file=form.file.data)
+        name_file=secure_filename(file.filename)
+        name_file_str= str(uuid.uuid1()) + "_" + name_file
+        
+        # Clear The Form
+        form.title.data = ''
+        form.content.data = ''
+        form.author.data = ''
+    
+        # Add post data to database
+        db.session.add(new)
+        db.session.commit()
+        
+        file.save(os.path.join( app.config['UPLOAD_FOLDER2'], name_file_str))
+        # Return a Message
+        flash("Uusi uutisia lähetetty onnistuneesti!")
+    return render_template("add_news.html",
+                            form=form)
+
 
 @app.route('/vaihtokauppa/delete/<int:id>')
 @login_required
@@ -367,7 +416,8 @@ def signup():
 @app.route('/news') 
 @login_required
 def news():
-    return render_template("news.html")
+    news = News.query.order_by(News.date_posted)
+    return render_template("news.html", news=news)
 
 
 #error pages

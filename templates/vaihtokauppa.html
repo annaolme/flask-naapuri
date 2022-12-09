@@ -2,8 +2,20 @@
 
 
 <div class="container">
-    <div class="card-header">
-        Vaihtokauppa <a href="{{ url_for('add_post') }}" class="class=btn btn-danger">Luo uusi ilmoitus</a></div>
+    <br><br> {% for message in get_flashed_messages() %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Sulje"></button>
+    </div>
+    {% endfor %}
+    <div class="row">
+        <div class="col text-left">
+            <h3>Vaihtokauppa </h3>
+        </div>
+        <div class="col text-right">
+            <a href="{{ url_for('add_post') }}"><button class="class= btn btn-primary">Luo uusi ilmoitus</button></a>
+        </div>
+    </div>   
     </br>
 
     {% for post in posts %}

@@ -1,0 +1,37 @@
+
+{% extends 'base.html' %} 
+
+{%block content%}
+
+
+<main>
+
+  <section class="py-2 text-center container">
+    <div class="row py-lg-1">
+      <div class="col-lg-6 col-md-3 mx-auto">
+        <h1 class="fw-light">Lisää kerrostalon uutiset</h1>    
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <br><br> {% for message in get_flashed_messages() %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Sulje"></button>
+    </div>
+    {% endfor %}
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }} 
+        {{ form.title.label(class="form-label") }} {{ form.title(class="form-control") }}<br/> 
+        {{ form.author.label(class="form-label") }} {{ form.author(class="form-control") }}<br/> 
+        {{ form.file.label(class="form-label") }} {{ form.file(class="form-control") }}<br/> 
+        {{ form.content.label(class="form-label") }} {{ form.content(class="form-control", rows="10") }}<br/> 
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+  </div>
+      
+
+
+{% endblock %}
+    
