@@ -115,7 +115,7 @@ def delete_post(id):
 
 	except:
 			# Return an error message
-		flash("Ilmoituksen poistamisella oli ongelma, yritä uudelleen...")
+		flash("Ilmoituksen poistamisessa oli ongelma, yritä uudelleen...")
 
 			# Grab all the posts from the database
 		posts = Posts.query.order_by(Posts.date_posted)
@@ -135,7 +135,7 @@ def edit_post(id):
 		# Update Database
 		db.session.add(post)
 		db.session.commit()
-		flash("Post Has Been Updated!")
+		flash("Ilmoitus päivitetty!!")
 		return redirect(url_for('vaihtokauppa', id=post.id))
 	form.title.data = post.title
 	form.author.data = post.author
@@ -186,7 +186,7 @@ class Users(UserMixin, db.Model):
     
     @property
     def password(self):
-        raise AttributeError('Salasana ei ole luettavissa')
+        raise AttributeError('Salasana ei ole luettavissa.')
     
     @password.setter
     def password(self, password):
@@ -336,7 +336,7 @@ def dashboard():
                 try:
                     db.session.commit()
                     saver.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
-                    flash("Muutokset on päivitetty onnistuneesti!")
+                    flash("Muutokset ovat päivittyneet onnistuneesti!")
                     return render_template("dashboard.html", 
 					                    form=form,
 					                    name_to_update = name_to_update)
